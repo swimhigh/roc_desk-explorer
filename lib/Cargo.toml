@@ -1,11 +1,13 @@
-﻿[package]
+[package]
 name = "roc_desk_explorer"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 [dependencies]
-roc_desk_core = { git = "https://github.com/swimhigh/roc_desk-common", package = "roc_desk_core", tag = "common-v0.2.4" }
-roc_desk_common = { git = "https://github.com/swimhigh/roc_desk-common", package = "roc_desk_common", tag = "common-v0.2.4" }
-
-
-
+roc_desk_core = { git = "https://github.com/swimhigh/roc_desk-common", package = "roc_desk_core", tag = "common-v0.3.0" }
+roc_desk_common = { git = "https://github.com/swimhigh/roc_desk-common", package = "roc_desk_common", tag = "common-v0.3.0" }
+tauri = { version = "2" }
+tauri-plugin-opener = "2"
+tokio = { version = "1", features = ["fs"] }
+base64 = "0.22"
+trash = "5"
