@@ -8,3 +8,5 @@ pub const TOOL_DESCRIPTION: &str = "资源管理器：本地与远程文件浏�
 pub fn tool_info() -> (&'static str, &'static str) {
     (TOOL_NAME, TOOL_DESCRIPTION)
 }
+
+pub use roc_desk_common::fsops::{FileOps, LocalFileOps};
