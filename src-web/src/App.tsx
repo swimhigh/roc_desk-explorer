@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { localFsService } from "./services/localFsService";
+import { ThemeToggle } from "./components/ThemeToggle";
 import type { FileEntry } from "./types/bindings";
 
 /**
@@ -490,7 +491,7 @@ export default function App() {
             setActiveSide(side);
             setMenu({ side, tabId: tab.id, entry: null, x: e.clientX, y: e.clientY });
           }}
-          style={{ ...styles.list, outline: isActive ? "1px solid #3b82f6" : "none", outlineOffset: -1 }}
+          style={{ ...styles.list, outline: isActive ? "1px solid var(--accent)" : "none", outlineOffset: -1 }}
         >
           <div style={styles.fileHeader}>
             <span>名称</span>
@@ -575,6 +576,11 @@ export default function App() {
 
   return (
     <div style={styles.root} onClick={() => menu && setMenu(null)}>
+      <div style={styles.topBar}>
+        <span style={styles.topBarTitle}>资源管理器</span>
+        <div style={{ flex: 1 }} />
+        <ThemeToggle />
+      </div>
       <div style={styles.panes}>
         {renderPane("left")}
         <div style={styles.divider} />
@@ -630,7 +636,7 @@ export default function App() {
           移动→对面
         </button>
         <button
-          style={{ ...styles.actionBtn, color: "#f87171" }}
+          style={{ ...styles.actionBtn, color: "var(--danger)" }}
           title="删除选中项"
           disabled={activeSelectedCount === 0}
           onClick={() =>
@@ -656,7 +662,7 @@ export default function App() {
           {menuItems.map((item, i) => (
             <div
               key={i}
-              style={{ ...styles.menuItem, ...(item.danger ? { color: "#f87171" } : {}) }}
+              style={{ ...styles.menuItem, ...(item.danger ? { color: "var(--danger)" } : {}) }}
               onClick={() => {
                 item.onClick();
                 setMenu(null);
@@ -684,7 +690,7 @@ export default function App() {
               <button style={styles.actionBtn} onClick={() => setDeleteTarget(null)}>
                 取消
               </button>
-              <button style={{ ...styles.actionBtn, color: "#f87171" }} onClick={() => void confirmDelete()}>
+              <button style={{ ...styles.actionBtn, color: "var(--danger)" }} onClick={() => void confirmDelete()}>
                 删除
               </button>
             </div>
@@ -704,41 +710,43 @@ export default function App() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  root: { display: "flex", flexDirection: "column", height: "100vh", background: "#111827", color: "#e5e7eb", userSelect: "none", fontSize: 12 },
+  root: { display: "flex", flexDirection: "column", height: "100vh", background: "var(--bg-app)", color: "var(--text-primary)", userSelect: "none", fontSize: 12 },
+  topBar: { display: "flex", alignItems: "center", height: 32, padding: "0 8px", background: "var(--bg-surface)", borderBottom: "1px solid var(--border-default)", flexShrink: 0, gap: 8 },
+  topBarTitle: { fontSize: 12, color: "var(--text-secondary)" },
   panes: { flex: 1, display: "flex", overflow: "hidden", minHeight: 0 },
-  divider: { width: 1, background: "#374151", flexShrink: 0 },
+  divider: { width: 1, background: "var(--border-default)", flexShrink: 0 },
   pane: { flex: 1, display: "flex", flexDirection: "column", minWidth: 0, minHeight: 0 },
-  tabBar: { display: "flex", alignItems: "center", height: 26, overflowX: "auto", borderBottom: "1px solid #374151", flexShrink: 0 },
-  tab: { display: "flex", alignItems: "center", gap: 4, padding: "0 8px", height: "100%", cursor: "pointer", borderRight: "1px solid #1f2937", whiteSpace: "nowrap", flexShrink: 0 },
-  tabActive: { background: "#1f2937" },
+  tabBar: { display: "flex", alignItems: "center", height: 26, overflowX: "auto", borderBottom: "1px solid var(--border-default)", flexShrink: 0 },
+  tab: { display: "flex", alignItems: "center", gap: 4, padding: "0 8px", height: "100%", cursor: "pointer", borderRight: "1px solid var(--border-subtle)", whiteSpace: "nowrap", flexShrink: 0 },
+  tabActive: { background: "var(--bg-surface-raised)" },
   tabLabel: { maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis" },
-  tabClose: { color: "#9ca3af", cursor: "pointer", padding: "0 2px" },
-  tabAdd: { width: 22, height: 22, flexShrink: 0, background: "transparent", color: "#e5e7eb", border: "none", cursor: "pointer" },
-  toolbar: { display: "flex", alignItems: "center", gap: 4, padding: "3px 4px", borderBottom: "1px solid #1f2937", flexShrink: 0 },
-  filterBar: { display: "flex", alignItems: "center", gap: 4, padding: "3px 4px", borderBottom: "1px solid #1f2937", flexShrink: 0 },
-  input: { height: 22, fontSize: 12, background: "#0b1220", color: "#e5e7eb", border: "1px solid #374151", borderRadius: 4, padding: "0 6px" },
-  iconBtn: { height: 22, width: 22, background: "#1f2937", color: "#e5e7eb", border: "1px solid #374151", borderRadius: 4, cursor: "pointer", flexShrink: 0 },
+  tabClose: { color: "var(--text-secondary)", cursor: "pointer", padding: "0 2px" },
+  tabAdd: { width: 22, height: 22, flexShrink: 0, background: "transparent", color: "var(--text-primary)", border: "none", cursor: "pointer" },
+  toolbar: { display: "flex", alignItems: "center", gap: 4, padding: "3px 4px", borderBottom: "1px solid var(--border-subtle)", flexShrink: 0 },
+  filterBar: { display: "flex", alignItems: "center", gap: 4, padding: "3px 4px", borderBottom: "1px solid var(--border-subtle)", flexShrink: 0 },
+  input: { height: 22, fontSize: 12, background: "var(--bg-app)", color: "var(--text-primary)", border: "1px solid var(--border-default)", borderRadius: 4, padding: "0 6px" },
+  iconBtn: { height: 22, width: 22, background: "var(--bg-surface-raised)", color: "var(--text-primary)", border: "1px solid var(--border-default)", borderRadius: 4, cursor: "pointer", flexShrink: 0 },
   list: { flex: 1, overflowY: "auto" },
-  fileHeader: { display: "grid", gridTemplateColumns: "1fr 90px 110px", padding: "4px 8px", borderBottom: "1px solid #374151", color: "#9ca3af", position: "sticky", top: 0, background: "#111827" },
-  fileRow: { display: "grid", gridTemplateColumns: "1fr 90px 110px", padding: "4px 8px", cursor: "default", borderBottom: "1px solid #1a2332" },
-  fileRowSelected: { background: "#1e3a5f" },
+  fileHeader: { display: "grid", gridTemplateColumns: "1fr 90px 110px", padding: "4px 8px", borderBottom: "1px solid var(--border-default)", color: "var(--text-secondary)", position: "sticky", top: 0, background: "var(--bg-app)" },
+  fileRow: { display: "grid", gridTemplateColumns: "1fr 90px 110px", padding: "4px 8px", cursor: "default", borderBottom: "1px solid var(--border-subtle)" },
+  fileRowSelected: { background: "var(--bg-selected)" },
   fileName: { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
-  fileMeta: { color: "#9ca3af", textAlign: "right" },
-  emptyMsg: { padding: 16, fontSize: 12, color: "#9ca3af" },
-  renameInput: { width: "100%", height: 18, fontSize: 12, background: "#0b1220", color: "#e5e7eb", border: "1px solid #3b82f6", borderRadius: 3, padding: "0 4px" },
-  functionBar: { display: "flex", borderTop: "1px solid #374151", flexShrink: 0 },
-  fnBtn: { flex: 1, background: "#1f2937", color: "#e5e7eb", border: "1px solid #1f2937", padding: "6px 4px", cursor: "pointer", fontSize: 12 },
-  kbd: { background: "#374151", borderRadius: 3, padding: "1px 4px", marginRight: 4, fontSize: 11 },
-  actionBar: { display: "flex", alignItems: "center", gap: 8, padding: "6px 8px", borderTop: "1px solid #374151", flexShrink: 0 },
-  actionBtn: { background: "#1f2937", color: "#e5e7eb", border: "1px solid #374151", borderRadius: 4, padding: "4px 10px", cursor: "pointer", fontSize: 12 },
-  statusText: { marginLeft: "auto", fontSize: 11, color: "#9ca3af" },
-  contextMenu: { position: "fixed", background: "#1f2937", border: "1px solid #374151", borderRadius: 4, padding: 4, minWidth: 140, zIndex: 20, boxShadow: "0 4px 12px rgba(0,0,0,0.4)" },
+  fileMeta: { color: "var(--text-secondary)", textAlign: "right" },
+  emptyMsg: { padding: 16, fontSize: 12, color: "var(--text-secondary)" },
+  renameInput: { width: "100%", height: 18, fontSize: 12, background: "var(--bg-app)", color: "var(--text-primary)", border: "1px solid var(--accent)", borderRadius: 3, padding: "0 4px" },
+  functionBar: { display: "flex", borderTop: "1px solid var(--border-default)", flexShrink: 0 },
+  fnBtn: { flex: 1, background: "var(--bg-surface-raised)", color: "var(--text-primary)", border: "1px solid var(--border-subtle)", padding: "6px 4px", cursor: "pointer", fontSize: 12 },
+  kbd: { background: "var(--border-default)", borderRadius: 3, padding: "1px 4px", marginRight: 4, fontSize: 11 },
+  actionBar: { display: "flex", alignItems: "center", gap: 8, padding: "6px 8px", borderTop: "1px solid var(--border-default)", flexShrink: 0 },
+  actionBtn: { background: "var(--bg-surface-raised)", color: "var(--text-primary)", border: "1px solid var(--border-default)", borderRadius: 4, padding: "4px 10px", cursor: "pointer", fontSize: 12 },
+  statusText: { marginLeft: "auto", fontSize: 11, color: "var(--text-secondary)" },
+  contextMenu: { position: "fixed", background: "var(--bg-surface-raised)", border: "1px solid var(--border-default)", borderRadius: 4, padding: 4, minWidth: 140, zIndex: 20, boxShadow: "0 4px 12px rgba(0,0,0,0.4)" },
   menuItem: { padding: "6px 10px", borderRadius: 4, cursor: "pointer" },
   modalOverlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 30 },
-  modal: { background: "#1f2937", border: "1px solid #374151", borderRadius: 6, padding: 16, minWidth: 320 },
+  modal: { background: "var(--bg-surface-raised)", border: "1px solid var(--border-default)", borderRadius: 6, padding: 16, minWidth: 320 },
   modalActions: { display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 12 },
   toastStack: { position: "fixed", right: 12, bottom: 12, display: "flex", flexDirection: "column", gap: 6, zIndex: 40 },
   toast: { padding: "8px 12px", borderRadius: 4, fontSize: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.4)" },
-  toastError: { background: "#7f1d1d", color: "#fecaca" },
-  toastSuccess: { background: "#14532d", color: "#bbf7d0" },
+  toastError: { background: "var(--danger)", color: "#fff" },
+  toastSuccess: { background: "var(--success)", color: "#fff" },
 };
