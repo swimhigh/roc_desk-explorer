@@ -239,7 +239,7 @@ pub mod cmd {
     /// 单独处理——`open_path` 不会把子进程工作目录设成 exe 自己所在的文件夹，很多读
     /// 同目录配置文件的程序会因此找不到自己的配置。直接 spawn 该 exe、显式设置工作
     /// 目录为其父目录，效果才等价于"双击打开"。
-    fn open_path_or_launch_exe(app_handle: &AppHandle, path: &str) -> Result<(), AppError> {
+    pub fn open_path_or_launch_exe(app_handle: &AppHandle, path: &str) -> Result<(), AppError> {
         let is_exe = std::path::Path::new(path)
             .extension()
             .and_then(|e| e.to_str())
